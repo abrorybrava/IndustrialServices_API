@@ -8,12 +8,14 @@ namespace IndustrialServices_API.Controllers
     public class FacultyMemberController : ControllerBase
     {
         private readonly FacultyMember facultyMemberRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         ResponseModel response = new ResponseModel();
 
         public FacultyMemberController(IConfiguration configuration)
         {
             facultyMemberRepository = new FacultyMember(configuration);
         }
+
 
         [HttpGet("/GetAllFacultyMembers", Name = "GetAllFacultyMembers")]
         public IActionResult GetAllFacultyMembers()
