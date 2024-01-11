@@ -6,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace IndustrialServices_API.Models
 {
-    public class ArtikelRepository
+    public class Artikel
     {
         private readonly string _connectionString;
 
-        public ArtikelRepository(IConfiguration configuration)
+        public Artikel(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }

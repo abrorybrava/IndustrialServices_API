@@ -8,12 +8,12 @@ namespace IndustrialServices_API.Controllers
 {
     public class ArtikelController : ControllerBase
     {
-        private readonly ArtikelRepository artikelRepository;
+        private readonly Artikel artikelRepository;
         ResponseModel response = new ResponseModel();
 
         public ArtikelController(IConfiguration configuration)
         {
-            artikelRepository = new ArtikelRepository(configuration);
+            artikelRepository = new Artikel(configuration);
         }
 
         [HttpGet("/GetAllArtikel", Name = "GetAllArtikel")]
