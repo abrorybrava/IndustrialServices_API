@@ -85,6 +85,21 @@ namespace IndustrialServices_API.Controllers
         }
 
 
+        [HttpGet("/GetPengajarPelatihan", Name = "GetPengajarPelatihan")]
+        public IActionResult GetPengajarPelatihan(int id)
+        {
+            try
+            {
+                var pelatihan = pelatihanRepository.GetPengajarPelatihan(id);
+                return Ok(pelatihan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve fasilitas: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("/UpdatePelatihan", Name = "UpdatePelatihan")]
         public IActionResult UpdatePelatihan([FromBody] PelatihanModel pelatihan)
         {

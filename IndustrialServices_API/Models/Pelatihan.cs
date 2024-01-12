@@ -121,7 +121,6 @@ namespace IndustrialServices_API.Models
                     SqlCommand command = new SqlCommand(query, _connection);
                     _connection.Open();
                     SqlDataReader reader = command.ExecuteReader();
-                    int idPelatihan = -1; // Inisialisasi ID pelatihan
                     if (reader.Read())
                     {
 
@@ -148,6 +147,45 @@ namespace IndustrialServices_API.Models
                     _connection.Close(); 
                 }
             }
+        }
+
+        public List<PelatihanModel> GetPengajarPelatihan(int id)
+        {
+            List<PelatihanModel> pmodel = new List<PelatihanModel>();
+
+            try
+            {
+                string query = "SELECT DPP.id_pelatihan, DPP.id_pengajar, TP.nama_pengajar " +
+                               "FROM Detail_Pengajar_Pelatihan DPP " +
+                               "INNER JOIN Tenaga_Pengajar TP ON DPP.id_pengajar = TP.id_pengajar " +
+                               "WHERE DPP.id_pelatihan = @id";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@id", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel()
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        id_pengajar = Convert.ToInt32(reader["id_pengajar"]),
+                        nama_pengajar = reader["nama_pengajar"].ToString()
+                    };
+                    pmodel.Add(pelatihan);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return pmodel;
         }
 
 
@@ -186,6 +224,13 @@ namespace IndustrialServices_API.Models
                 command.Parameters.AddWithValue("@id", id);
                 _connection.Open();
                 command.ExecuteNonQuery();
+                _connection.Close();
+
+                string query1 = "DELETE FROM Detail_Pengajar_Pelatihan WHERE id_pelatihan = @p1";
+                SqlCommand command1 = new SqlCommand(query1, _connection);
+                command1.Parameters.AddWithValue("@p1", id);
+                _connection.Open();
+                command1.ExecuteNonQuery();
             }
             catch (Exception ex)
             {

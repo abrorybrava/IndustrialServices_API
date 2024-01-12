@@ -54,9 +54,18 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                response.status = 200;
-                response.messages = "Success";
-                pengelolaWebRepository.InsertPengelolaWeb(pengelolaWeb);
+                if (!pengelolaWebRepository.CheckUsernamePassword(pengelolaWeb))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    pengelolaWebRepository.InsertPengelolaWeb(pengelolaWeb);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Username atau Password sudah digunakan";
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {
@@ -71,9 +80,19 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                response.status = 200;
-                response.messages = "Success";
-                pengelolaWebRepository.UpdatePengelolaWeb(pengelolaWeb);
+                if (!pengelolaWebRepository.CheckUsernamePasswordEdit(pengelolaWeb))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    pengelolaWebRepository.UpdatePengelolaWeb(pengelolaWeb);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Username atau Password sudah digunakan";
+                    return Ok(response);
+                }
+
             }
             catch (Exception ex)
             {

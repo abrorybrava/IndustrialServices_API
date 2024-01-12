@@ -151,5 +151,60 @@ namespace IndustrialServices_API.Models
                 _connection.Close();
             }
         }
+
+        public bool CheckUsernamePassword(PengelolaWebModel pengelola)
+        {
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 OR password = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", pengelola.username);
+                command.Parameters.AddWithValue("@p2", pengelola.password);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckUsernamePasswordEdit(PengelolaWebModel pengelola)
+        {
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND username = @p2 OR password = @p3";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p2", pengelola.id_pengelola);
+                command.Parameters.AddWithValue("@p2", pengelola.username);
+                command.Parameters.AddWithValue("@p3", pengelola.password);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
     }
 }
