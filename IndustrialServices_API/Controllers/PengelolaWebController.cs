@@ -49,6 +49,23 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetPengelolaWebById", Name = "GetPengelolaWebById")]
+        public IActionResult GetPengelolaWebById(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = pengelolaWebRepository.GetAllPengelolaWebById(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex.Message;
+            }
+            return Ok(response);
+        }
+
         [HttpPost("/InsertPengelolaWeb", Name = "InsertPengelolaWeb")]
         public IActionResult InsertPengelolaWeb([FromBody] PengelolaWebModel pengelolaWeb)
         {
@@ -110,6 +127,32 @@ namespace IndustrialServices_API.Controllers
                 response.status = 200;
                 response.messages = "Success";
                 pengelolaWebRepository.DeletePengelolaWeb(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex.Message;
+            }
+            return Ok(response);
+        }
+        [HttpGet("/Login", Name = "Login")]
+        public IActionResult Login(string username, string password)
+        {
+            try
+            {
+                var pengelola = pengelolaWebRepository.Login(username, password);
+                if (pengelola.username != null)
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    response.data = pengelola;
+                    return Ok(response);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Failed";
+                }
             }
             catch (Exception ex)
             {

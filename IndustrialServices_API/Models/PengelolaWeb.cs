@@ -82,6 +82,37 @@ namespace IndustrialServices_API.Models
             }
             return pengelolaWeb;
         }
+        public PengelolaWebModel GetAllPengelolaWebById(int id)
+        {
+            PengelolaWebModel pengelolaWeb = new PengelolaWebModel();
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola = @id";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@id", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    pengelolaWeb.id_pengelola = Convert.ToInt32(reader["id_pengelola"]);
+                    pengelolaWeb.nama_pengelola = reader["nama_pengelola"].ToString();
+                    pengelolaWeb.username = reader["username"].ToString();
+                    pengelolaWeb.password = reader["password"].ToString();
+                    pengelolaWeb.peran = reader["peran"].ToString();
+                    pengelolaWeb.status = Convert.ToInt32(reader["status"]);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return pengelolaWeb;
+        }
 
         public void InsertPengelolaWeb(PengelolaWebModel pengelolaWeb)
         {
@@ -204,6 +235,39 @@ namespace IndustrialServices_API.Models
                 _connection.Close();
             }
             return false; // Username dan Password belum digunakan
+        }
+
+        public PengelolaWebModel Login(string username, string password)
+        {
+            PengelolaWebModel pengelolaWeb = new PengelolaWebModel();
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 AND password = @p2 AND status != 0";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", username);
+                command.Parameters.AddWithValue("@p2", password);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    pengelolaWeb.id_pengelola = Convert.ToInt32(reader["id_pengelola"]);
+                    pengelolaWeb.nama_pengelola = reader["nama_pengelola"].ToString();
+                    pengelolaWeb.username = reader["username"].ToString();
+                    pengelolaWeb.password = reader["password"].ToString();
+                    pengelolaWeb.peran = reader["peran"].ToString();
+                    pengelolaWeb.status = Convert.ToInt32(reader["status"]);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return pengelolaWeb;
         }
 
     }
