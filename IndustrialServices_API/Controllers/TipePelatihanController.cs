@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using IndustrialServices_API.Models;
+using IndustrialServices_API.Model;
 
 namespace IndustrialServices_API.Controllers
 {
     public class TipePelatihanController : ControllerBase
     {
         private readonly TipePelatihan tipePelatihanRepository;
+        ResponseModel response = new ResponseModel();
 
         public TipePelatihanController(IConfiguration configuration)
         {
@@ -24,7 +26,7 @@ namespace IndustrialServices_API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Failed to retrieve types of training: {ex.Message}");
-            }
+            }   
         }
 
         [HttpGet("/GetTipePelatihan", Name = "GetTipePelatihan")]
@@ -46,13 +48,24 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                tipePelatihanRepository.InsertTipePelatihan(tipePelatihan);
-                return Ok("Type of training inserted successfully");
+                if (!tipePelatihanRepository.CheckNama(tipePelatihan))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    tipePelatihanRepository.InsertTipePelatihan(tipePelatihan);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Type of Facility was already added!";
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to insert type of training: {ex.Message}");
+                return StatusCode(500, $"Failed to insert type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/UpdateTipePelatihan", Name = "UpdateTipePelatihan")]
@@ -60,21 +73,32 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                var existingTipePelatihan = tipePelatihanRepository.GetTipePelatihanById(tipePelatihan.id_tipe_pelatihan);
-                if (existingTipePelatihan != null)
+                var existingTipeFasilitas = tipePelatihanRepository.GetTipePelatihanById(tipePelatihan.id_tipe_pelatihan);
+                if (existingTipeFasilitas != null)
                 {
-                    tipePelatihanRepository.UpdateTipePelatihan(tipePelatihan);
-                    return Ok("Type of training updated successfully");
+                    if (!tipePelatihanRepository.CheckNamaEdit(tipePelatihan))
+                    {
+                        response.status = 200;
+                        response.messages = "Success";
+                        tipePelatihanRepository.UpdateTipePelatihan(tipePelatihan);
+                    }
+                    else
+                    {
+                        response.status = 500;
+                        response.messages = "Nama was already added!";
+                        return Ok(response);
+                    }
                 }
                 else
                 {
-                    return NotFound($"Type of training with ID {tipePelatihan.id_tipe_pelatihan} not found");
+                    return NotFound($"Type of facility with ID {tipePelatihan.id_tipe_pelatihan} not found");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to update type of training: {ex.Message}");
+                return StatusCode(500, $"Failed to update type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/DeleteTipePelatihan", Name = "DeleteTipePelatihan")]

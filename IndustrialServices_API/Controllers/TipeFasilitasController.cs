@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using IndustrialServices_API.Models;
+using IndustrialServices_API.Model;
 
 namespace IndustrialServices_API.Controllers
 {
     public class TipeFasilitasController : ControllerBase
     {
         private readonly TipeFasilitas tipeFasilitasRepository;
+        ResponseModel response = new ResponseModel();
 
         public TipeFasilitasController(IConfiguration configuration)
         {
@@ -46,13 +48,24 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                tipeFasilitasRepository.InsertTipeFasilitas(tipeFasilitas);
-                return Ok("Type of facility inserted successfully");
+                if (!tipeFasilitasRepository.CheckNama(tipeFasilitas))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    tipeFasilitasRepository.InsertTipeFasilitas(tipeFasilitas);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Type of Facility was already added!";
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Failed to insert type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/UpdateTipeFasilitas", Name = "UpdateTipeFasilitas")]
@@ -63,8 +76,18 @@ namespace IndustrialServices_API.Controllers
                 var existingTipeFasilitas = tipeFasilitasRepository.GetTipeFasilitasById(tipeFasilitas.id_tipe_fasilitas);
                 if (existingTipeFasilitas != null)
                 {
-                    tipeFasilitasRepository.UpdateTipeFasilitas(tipeFasilitas);
-                    return Ok("Type of facility updated successfully");
+                    if (!tipeFasilitasRepository.CheckNamaEdit(tipeFasilitas))
+                    {
+                        response.status = 200;
+                        response.messages = "Success";
+                        tipeFasilitasRepository.UpdateTipeFasilitas(tipeFasilitas);
+                    }
+                    else
+                    {
+                        response.status = 500;
+                        response.messages = "Nama was already added!";
+                        return Ok(response);
+                    }
                 }
                 else
                 {
@@ -75,6 +98,7 @@ namespace IndustrialServices_API.Controllers
             {
                 return StatusCode(500, $"Failed to update type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/DeleteTipeFasilitas", Name = "DeleteTipeFasilitas")]

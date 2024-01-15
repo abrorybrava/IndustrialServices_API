@@ -8,7 +8,7 @@
         public string nama_pengajar { get; set; }
         public DateTime tanggal_pelatihan_awal { get; set; }
         public DateTime tanggal_pelatihan_akhir { get; set; }
-        public string jenis_pelatihan { get; set; }
+        public int id_tipe_pelatihan { get; set; }
         public string deskripsi_pelatihan { get; set; }
         public int status { get; set; }
 

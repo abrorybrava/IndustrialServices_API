@@ -33,7 +33,7 @@ namespace IndustrialServices_API.Models
                         nama_pelatihan = reader["nama_pelatihan"].ToString(),
                         tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
                         tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
-                        jenis_pelatihan = reader["jenis_pelatihan"].ToString(),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
                         deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString(),
                         status = Convert.ToInt32(reader["status"])
                     };
@@ -94,7 +94,7 @@ namespace IndustrialServices_API.Models
                 command.Parameters.AddWithValue("@nama", pelatihan.nama_pelatihan);
                 command.Parameters.AddWithValue("@tanggal_awal", pelatihan.tanggal_pelatihan_awal);
                 command.Parameters.AddWithValue("@tanggal_akhir", pelatihan.tanggal_pelatihan_akhir);
-                command.Parameters.AddWithValue("@jenis", pelatihan.jenis_pelatihan);
+                command.Parameters.AddWithValue("@jenis", pelatihan.id_tipe_pelatihan);
                 command.Parameters.AddWithValue("@deskripsi", pelatihan.deskripsi_pelatihan);
                 command.Parameters.AddWithValue("@status", pelatihan.status);
                 _connection.Open();
@@ -193,12 +193,12 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "UPDATE Pelatihan SET nama_pelatihan = @nama, tanggal_pelatihan_awal = @tanggal_awal, tanggal_pelatihan_akhir = @tanggal_akhir, jenis_pelatihan = @jenis, deskripsi_pelatihan = @deskripsi, status = @status WHERE id_pelatihan = @id";
+                string query = "UPDATE Pelatihan SET nama_pelatihan = @nama, tanggal_pelatihan_awal = @tanggal_awal, tanggal_pelatihan_akhir = @tanggal_akhir, id_tipe_pelatihan = @jenis, deskripsi_pelatihan = @deskripsi, status = @status WHERE id_pelatihan = @id";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", pelatihan.nama_pelatihan);
                 command.Parameters.AddWithValue("@tanggal_awal", pelatihan.tanggal_pelatihan_awal);
                 command.Parameters.AddWithValue("@tanggal_akhir", pelatihan.tanggal_pelatihan_akhir);
-                command.Parameters.AddWithValue("@jenis", pelatihan.jenis_pelatihan);
+                command.Parameters.AddWithValue("@jenis", pelatihan.id_tipe_pelatihan);
                 command.Parameters.AddWithValue("@deskripsi", pelatihan.deskripsi_pelatihan);
                 command.Parameters.AddWithValue("@status", pelatihan.status);
                 command.Parameters.AddWithValue("@id", pelatihan.id_pelatihan);
@@ -258,7 +258,7 @@ namespace IndustrialServices_API.Models
                     pelatihan.nama_pelatihan = reader["nama_pelatihan"].ToString();
                     pelatihan.tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]);
                     pelatihan.tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]);
-                    pelatihan.jenis_pelatihan = reader["jenis_pelatihan"].ToString();
+                    pelatihan.id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]);
                     pelatihan.deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString();
                     pelatihan.status = Convert.ToInt32(reader["status"]);
                 }

@@ -183,9 +183,9 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND username = @p2 OR password = @p3";
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND (username = @p2 OR password = @p3)";
                 SqlCommand command = new SqlCommand(query, _connection);
-                command.Parameters.AddWithValue("@p2", pengelola.id_pengelola);
+                command.Parameters.AddWithValue("@p1", pengelola.id_pengelola);
                 command.Parameters.AddWithValue("@p2", pengelola.username);
                 command.Parameters.AddWithValue("@p3", pengelola.password);
                 _connection.Open();
@@ -194,7 +194,6 @@ namespace IndustrialServices_API.Models
                 {
                     return true; // Username atau Password sudah digunakan
                 }
-                reader.Close();
             }
             catch (Exception ex)
             {
@@ -206,5 +205,6 @@ namespace IndustrialServices_API.Models
             }
             return false; // Username dan Password belum digunakan
         }
+
     }
 }

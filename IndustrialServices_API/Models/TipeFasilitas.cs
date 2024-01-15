@@ -138,5 +138,58 @@ namespace IndustrialServices_API.Models
             }
             return tipeFasilitasModel;
         }
+
+        public bool CheckNama(TipeFasilitasModel tipeFasilitas)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tipe_Fasilitas WHERE tipe_fasilitas = @p1";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", tipeFasilitas.tipe_fasilitas);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckNamaEdit(TipeFasilitasModel tipeFasilitas)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tipe_Fasilitas WHERE id_tipe_fasilitas != @p1 AND tipe_fasilitas = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", tipeFasilitas.id_tipe_fasilitas);
+                command.Parameters.AddWithValue("@p2", tipeFasilitas.tipe_fasilitas);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
     }
 }

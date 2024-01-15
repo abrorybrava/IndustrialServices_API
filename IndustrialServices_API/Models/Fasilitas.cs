@@ -31,7 +31,7 @@ namespace IndustrialServices_API.Models
                     {
                         id_fasilitas = Convert.ToInt32(reader["id_fasilitas"]),
                         nama_fasilitas = reader["nama_fasilitas"].ToString(),
-                        jenis_fasilitas = reader["jenis_fasilitas"].ToString(),
+                        id_tipe_fasilitas = Convert.ToInt32(reader["id_tipe_fasilitas"]),
                         deskripsi_fasilitas = reader["deskripsi_fasilitas"].ToString(),
                         status = Convert.ToInt32(reader["status"])
                     };
@@ -57,7 +57,7 @@ namespace IndustrialServices_API.Models
                 string query = "INSERT INTO Fasilitas VALUES (@nama, @jenis, @deskripsi, @status)";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", fasilitasModel.nama_fasilitas);
-                command.Parameters.AddWithValue("@jenis", fasilitasModel.jenis_fasilitas);
+                command.Parameters.AddWithValue("@jenis", fasilitasModel.id_tipe_fasilitas);
                 command.Parameters.AddWithValue("@deskripsi", fasilitasModel.deskripsi_fasilitas);
                 command.Parameters.AddWithValue("@status", fasilitasModel.status);
                 _connection.Open();
@@ -78,10 +78,10 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "UPDATE Fasilitas SET nama_fasilitas = @nama, jenis_fasilitas = @jenis, deskripsi_fasilitas = @deskripsi, status = @status WHERE id_fasilitas = @id";
+                string query = "UPDATE Fasilitas SET nama_fasilitas = @nama, id_tipe_fasilitas = @jenis, deskripsi_fasilitas = @deskripsi, status = @status WHERE id_fasilitas = @id";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", fasilitasModel.nama_fasilitas);
-                command.Parameters.AddWithValue("@jenis", fasilitasModel.jenis_fasilitas);
+                command.Parameters.AddWithValue("@jenis", fasilitasModel.id_tipe_fasilitas);
                 command.Parameters.AddWithValue("@deskripsi", fasilitasModel.deskripsi_fasilitas);
                 command.Parameters.AddWithValue("@status", fasilitasModel.status);
                 command.Parameters.AddWithValue("@id", fasilitasModel.id_fasilitas);
@@ -132,7 +132,7 @@ namespace IndustrialServices_API.Models
                 {
                     fasilitasModel.id_fasilitas = Convert.ToInt32(reader["id_fasilitas"]);
                     fasilitasModel.nama_fasilitas = reader["nama_fasilitas"].ToString();
-                    fasilitasModel.jenis_fasilitas = reader["jenis_fasilitas"].ToString();
+                    fasilitasModel.id_tipe_fasilitas = Convert.ToInt32(reader["id_tipe_fasilitas"]);
                     fasilitasModel.deskripsi_fasilitas = reader["deskripsi_fasilitas"].ToString();
                     fasilitasModel.status = Convert.ToInt32(reader["status"]);
                 }

@@ -62,9 +62,20 @@ namespace IndustrialServices_API.Controllers
                     fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1); 
                     facultyMember.foto_pengajar = fileName;
                 }
-                response.status = 200;
-                response.messages = "Success";
-                facultyMemberRepository.InsertFacultyMember(facultyMember);
+
+                if (!facultyMemberRepository.CheckNPK(facultyMember))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    facultyMemberRepository.InsertFacultyMember(facultyMember);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "NPK was already added!";
+                    return Ok(response);
+                }
+
             }
             catch (Exception ex)
             {
@@ -89,9 +100,19 @@ namespace IndustrialServices_API.Controllers
                 {
                     facultyMember.foto_pengajar = null;
                 }
-                response.status = 200;
-                response.messages = "Success";
-                facultyMemberRepository.UpdateFacultyMember(facultyMember);
+
+                if (!facultyMemberRepository.CheckNPKEdit(facultyMember))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    facultyMemberRepository.UpdateFacultyMember(facultyMember);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "NPK was already added!";
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {

@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using IndustrialServices_API.Models;
+using IndustrialServices_API.Model;
 
 namespace IndustrialServices_API.Controllers
 {
     public class TipeProdukController : ControllerBase
     {
         private readonly TipeProduk tipeProdukRepository;
+        ResponseModel response = new ResponseModel();
+
 
         public TipeProdukController(IConfiguration configuration)
         {
@@ -46,13 +49,24 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                tipeProdukRepository.InsertTipeProduk(tipeProduk);
-                return Ok("Type of product inserted successfully");
+                if (!tipeProdukRepository.CheckNama(tipeProduk))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    tipeProdukRepository.InsertTipeProduk(tipeProduk);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Type of Facility was already added!";
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to insert type of product: {ex.Message}");
+                return StatusCode(500, $"Failed to insert type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/UpdateTipeProduk", Name = "UpdateTipeProduk")]
@@ -60,21 +74,32 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                var existingTipeProduk = tipeProdukRepository.GetTipeProdukById(tipeProduk.id_tipe_produk);
-                if (existingTipeProduk != null)
+                var existingTipeFasilitas = tipeProdukRepository.GetTipeProdukById(tipeProduk.id_tipe_produk);
+                if (existingTipeFasilitas != null)
                 {
-                    tipeProdukRepository.UpdateTipeProduk(tipeProduk);
-                    return Ok("Type of product updated successfully");
+                    if (!tipeProdukRepository.CheckNamaEdit(tipeProduk))
+                    {
+                        response.status = 200;
+                        response.messages = "Success";
+                        tipeProdukRepository.UpdateTipeProduk(tipeProduk);
+                    }
+                    else
+                    {
+                        response.status = 500;
+                        response.messages = "Nama was already added!";
+                        return Ok(response);
+                    }
                 }
                 else
                 {
-                    return NotFound($"Type of product with ID {tipeProduk.id_tipe_produk} not found");
+                    return NotFound($"Type of facility with ID {tipeProduk.id_tipe_produk} not found");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to update type of product: {ex.Message}");
+                return StatusCode(500, $"Failed to update type of facility: {ex.Message}");
             }
+            return Ok(response);
         }
 
         [HttpPost("/DeleteTipeProduk", Name = "DeleteTipeProduk")]

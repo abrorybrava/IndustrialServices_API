@@ -138,5 +138,57 @@ namespace IndustrialServices_API.Models
             }
             return tipeProdukModel;
         }
+        public bool CheckNama(TipeProdukModel tipeProduk)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tipe_Produk WHERE tipe_produk = @p1";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", tipeProduk.tipe_produk);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckNamaEdit(TipeProdukModel tipeProduk)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tipe_Produk WHERE id_tipe_produk != @p1 AND tipe_produk = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", tipeProduk.id_tipe_produk);
+                command.Parameters.AddWithValue("@p2", tipeProduk.tipe_produk);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
     }
 }

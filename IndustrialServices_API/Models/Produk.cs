@@ -31,7 +31,7 @@ namespace IndustrialServices_API.Models
                     {
                         id_produk = Convert.ToInt32(reader["id_produk"]),
                         nama_produk = reader["nama_produk"].ToString(),
-                        tipe_produk = reader["tipe_produk"].ToString(),
+                        id_tipe_produk = Convert.ToInt32(reader["id_tipe_produk"]),
                         pesanan = reader["pesanan"].ToString(),
                         deskripsi_produk = reader["deskripsi_produk"].ToString(),
                         status = Convert.ToInt32(reader["status"])
@@ -58,7 +58,7 @@ namespace IndustrialServices_API.Models
                 string query = "INSERT INTO Produk VALUES (@nama, @tipe, @pesanan, @deskripsi, @status)";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", ProdukModel.nama_produk);
-                command.Parameters.AddWithValue("@tipe", ProdukModel.tipe_produk);
+                command.Parameters.AddWithValue("@tipe", ProdukModel.id_tipe_produk);
                 command.Parameters.AddWithValue("@pesanan", ProdukModel.pesanan);
                 command.Parameters.AddWithValue("@deskripsi", ProdukModel.deskripsi_produk);
                 command.Parameters.AddWithValue("@status", ProdukModel.status);
@@ -79,10 +79,10 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "UPDATE Produk SET nama_produk = @nama, tipe_produk = @tipe, pesanan = @pesanan, deskripsi_produk = @deskripsi, status = @status WHERE id_produk = @id";
+                string query = "UPDATE Produk SET nama_produk = @nama, id_tipe_produk = @tipe, pesanan = @pesanan, deskripsi_produk = @deskripsi, status = @status WHERE id_produk = @id";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", ProdukModel.nama_produk);
-                command.Parameters.AddWithValue("@tipe", ProdukModel.tipe_produk);
+                command.Parameters.AddWithValue("@tipe", ProdukModel.id_tipe_produk);
                 command.Parameters.AddWithValue("@pesanan", ProdukModel.pesanan);
                 command.Parameters.AddWithValue("@deskripsi", ProdukModel.deskripsi_produk);
                 command.Parameters.AddWithValue("@status", ProdukModel.status);
@@ -134,7 +134,7 @@ namespace IndustrialServices_API.Models
                 {
                     ProdukModel.id_produk = Convert.ToInt32(reader["id_produk"]);
                     ProdukModel.nama_produk = reader["nama_produk"].ToString();
-                    ProdukModel.tipe_produk = reader["tipe_produk"].ToString();
+                    ProdukModel.id_tipe_produk = Convert.ToInt32(reader["id_tipe_produk"]);
                     ProdukModel.pesanan = reader["pesanan"].ToString();
                     ProdukModel.deskripsi_produk = reader["deskripsi_produk"].ToString();
                     ProdukModel.status = Convert.ToInt32(reader["status"]);

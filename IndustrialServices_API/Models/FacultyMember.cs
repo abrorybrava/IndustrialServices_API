@@ -152,5 +152,57 @@ namespace IndustrialServices_API.Models
                 Console.WriteLine(ex.Message);
             }
         }
+        public bool CheckNPK(FacultyMemberModel facultyMember)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE npk = @p1";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", facultyMember.npk);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckNPKEdit(FacultyMemberModel facultyMember)
+        {
+            try
+            {
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE id_pengajar != @p1 AND npk = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", facultyMember.id_pengajar);
+                command.Parameters.AddWithValue("@p2", facultyMember.npk);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
     }
 }
