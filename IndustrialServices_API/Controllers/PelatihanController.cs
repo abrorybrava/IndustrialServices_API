@@ -28,6 +28,34 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetAllPelatihanTechnical", Name = "GetAllPelatihanTechnical")]
+        public IActionResult GetAllPelatihanTechnical()
+        {
+            try
+            {
+                var pelatihanList = pelatihanRepository.GetAllPelatihanTechnical();
+                return Ok(pelatihanList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
+        [HttpGet("/GetAllPelatihanTechnical2", Name = "GetAllPelatihanTechnical2")]
+        public IActionResult GetAllPelatihanTechnical2()
+        {
+            try
+            {
+                var pelatihanList = pelatihanRepository.GetAllPelatihanTechnical2();
+                return Ok(pelatihanList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
         [HttpGet("/GetPelatihan", Name = "GetPelatihan")]
         public IActionResult GetPelatihan(int id)
         {

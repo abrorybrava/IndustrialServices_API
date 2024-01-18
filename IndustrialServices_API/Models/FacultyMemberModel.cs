@@ -8,5 +8,7 @@
         public string bidang_keahlian { get; set; }
         public string foto_pengajar { get; set; }
         public int status { get; set; }
+
+        public int jumlah_pelatihan { get; set; }
     }
 }

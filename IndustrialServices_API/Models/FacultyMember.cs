@@ -48,6 +48,115 @@ namespace IndustrialServices_API.Models
             return facultyMembers;
         }
 
+        public List<FacultyMemberModel> GetAllFacultyMembersbyBK(string bidang_keahlian)
+        {
+            List<FacultyMemberModel> facultyMembers = new List<FacultyMemberModel>();
+            try
+            {
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE bidang_keahlian = @p1 AND status != 0";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", bidang_keahlian);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    FacultyMemberModel facultyMember = new FacultyMemberModel
+                    {
+                        id_pengajar = Convert.ToInt32(reader["id_pengajar"].ToString()),
+                        npk = reader["npk"].ToString(),
+                        nama_pengajar = reader["nama_pengajar"].ToString(),
+                        bidang_keahlian = reader["bidang_keahlian"].ToString(),
+                        foto_pengajar = reader["foto_pengajar"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString())
+                    };
+                    facultyMembers.Add(facultyMember);
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return facultyMembers;
+        }
+
+        public List<FacultyMemberModel> GetAllFacultyMembersTechnical()
+        {
+            List<FacultyMemberModel> facultyMembers = new List<FacultyMemberModel>();
+            try
+            {
+                string query = "SELECT TP.*, COUNT(DPP.id_pelatihan) AS JumlahPelatihan FROM Tenaga_Pengajar TP " +
+                               "LEFT JOIN Detail_Pengajar_Pelatihan DPP ON TP.id_pengajar = DPP.id_pengajar " +
+                               "LEFT JOIN Pelatihan P ON DPP.id_pelatihan = P.id_pelatihan " +
+                               "WHERE TP.bidang_keahlian = 'Technical' AND TP.status != 0 " +
+                               "GROUP BY TP.id_pengajar, TP.npk, TP.nama_pengajar, TP.bidang_keahlian, TP.foto_pengajar, TP.status";
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    FacultyMemberModel facultyMember = new FacultyMemberModel
+                    {
+                        id_pengajar = Convert.ToInt32(reader["id_pengajar"].ToString()),
+                        npk = reader["npk"].ToString(),
+                        nama_pengajar = reader["nama_pengajar"].ToString(),
+                        bidang_keahlian = reader["bidang_keahlian"].ToString(),
+                        foto_pengajar = reader["foto_pengajar"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString()),
+                        jumlah_pelatihan = Convert.ToInt32(reader["JumlahPelatihan"].ToString())
+                    };
+                    facultyMembers.Add(facultyMember);
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return facultyMembers;
+        }
+
+        public List<FacultyMemberModel> GetAllFacultyMembersNonTechnical()
+        {
+            List<FacultyMemberModel> facultyMembers = new List<FacultyMemberModel>();
+            try
+            {
+                string query = "SELECT TP.*, COUNT(DPP.id_pelatihan) AS JumlahPelatihan FROM Tenaga_Pengajar TP " +
+                               "LEFT JOIN Detail_Pengajar_Pelatihan DPP ON TP.id_pengajar = DPP.id_pengajar " +
+                               "LEFT JOIN Pelatihan P ON DPP.id_pelatihan = P.id_pelatihan " +
+                               "WHERE TP.bidang_keahlian = 'Non-Technical' AND TP.status != 0 " +
+                               "GROUP BY TP.id_pengajar, TP.npk, TP.nama_pengajar, TP.bidang_keahlian, TP.foto_pengajar, TP.status";
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    FacultyMemberModel facultyMember = new FacultyMemberModel
+                    {
+                        id_pengajar = Convert.ToInt32(reader["id_pengajar"].ToString()),
+                        npk = reader["npk"].ToString(),
+                        nama_pengajar = reader["nama_pengajar"].ToString(),
+                        bidang_keahlian = reader["bidang_keahlian"].ToString(),
+                        foto_pengajar = reader["foto_pengajar"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString()),
+                        jumlah_pelatihan = Convert.ToInt32(reader["JumlahPelatihan"].ToString())
+                    };
+                    facultyMembers.Add(facultyMember);
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return facultyMembers;
+        }
+
+
+
         public FacultyMemberModel GetFacultyMemberById(int id)
         {
             FacultyMemberModel facultyMember = new FacultyMemberModel();
@@ -156,7 +265,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tenaga_Pengajar WHERE npk = @p1";
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE npk = @p1 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", facultyMember.npk);
                 _connection.Open();
@@ -182,7 +291,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tenaga_Pengajar WHERE id_pengajar != @p1 AND npk = @p2";
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE id_pengajar != @p1 AND npk = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", facultyMember.id_pengajar);
                 command.Parameters.AddWithValue("@p2", facultyMember.npk);

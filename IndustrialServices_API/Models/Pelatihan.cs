@@ -274,5 +274,97 @@ namespace IndustrialServices_API.Models
             }
             return pelatihan;
         }
+        public List<PelatihanModel> GetAllPelatihanTechnical()
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            try
+            {
+                string query = "SELECT Pelatihan.* " +
+                               "FROM Pelatihan " +
+                               "INNER JOIN Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
+                               "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
+                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Technical'";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                        tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                        tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                        deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString(),
+                        status = Convert.ToInt32(reader["status"])
+                    };
+                    pelatihanList.Add(pelatihan);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
+
+        public List<PelatihanModel> GetAllPelatihanTechnical2()
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            try
+            {
+                string query = "SELECT Pelatihan.*, Foto_Pelatihan.path_foto_pelatihan " +
+                               "FROM Pelatihan " +
+                               "INNER JOIN Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
+                               "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
+                               "LEFT JOIN Foto_Pelatihan_Detail ON Pelatihan.id_pelatihan = Foto_Pelatihan_Detail.id_pelatihan " +
+                               "LEFT JOIN Foto_Pelatihan ON Foto_Pelatihan_Detail.id_foto_pelatihan = Foto_Pelatihan.id_foto_pelatihan " +
+                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Technical' " +
+                               "ORDER BY Pelatihan.id_pelatihan DESC";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                        tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                        tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                        deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString(),
+                        status = Convert.ToInt32(reader["status"]),
+                        // tambahkan path foto_pelatihan ke dalam model
+                        path_foto_pelatihan = reader["path_foto_pelatihan"].ToString()
+                    };
+                    pelatihanList.Add(pelatihan);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
     }
 }

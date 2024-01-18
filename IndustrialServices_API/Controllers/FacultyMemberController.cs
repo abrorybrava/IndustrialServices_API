@@ -34,6 +34,55 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetAllFacultyMembersbyBK", Name = "GetAllFacultyMembersbyBK")]
+        public IActionResult GetAllFacultyMembersbyBK(string bidang_keahlian)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetAllFacultyMembersbyBK(bidang_keahlian);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+        [HttpGet("/GetAllFacultyMembersTechnical", Name = "GetAllFacultyMembersTechnical")]
+        public IActionResult GetAllFacultyMembersTechnical()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetAllFacultyMembersTechnical();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+        [HttpGet("/GetAllFacultyMembersNonTechnical", Name = "GetAllFacultyMembersNonTechnical")]
+        public IActionResult GetAllFacultyMembersNonTechnical()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetAllFacultyMembersNonTechnical();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
         [HttpGet("/GetFacultyMember", Name = "GetFacultyMember")]
         public IActionResult GetFacultyMember(int id)
         {
