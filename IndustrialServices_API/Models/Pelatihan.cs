@@ -274,7 +274,7 @@ namespace IndustrialServices_API.Models
             }
             return pelatihan;
         }
-        public List<PelatihanModel> GetAllPelatihanTechnical()
+        public List<PelatihanModel> GetAllPelatihanTechnical(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
         {
             List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
             try
@@ -284,6 +284,35 @@ namespace IndustrialServices_API.Models
                                "INNER JOIN Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
                                "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
                                "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Technical'";
+
+                // Tambahkan filter_tipe_pelatihan ke query jika diberikan dan tidak sama dengan 0
+                if (!string.IsNullOrEmpty(filter_tipe_pelatihan) && filter_tipe_pelatihan != "0")
+                {
+                    query += " AND Pelatihan.id_tipe_pelatihan = " + filter_tipe_pelatihan;
+                }
+
+                // Tambahkan filter_bulan ke query jika diberikan dan tidak sama dengan 0
+                if (filter_bulan.HasValue && filter_bulan.Value != 0)
+                {
+                    query += " AND MONTH(Pelatihan.tanggal_pelatihan_awal) = " + filter_bulan;
+                }
+
+                // Tambahkan penyortiran berdasarkan opsi yang diberikan
+                if (!string.IsNullOrEmpty(sortOption))
+                {
+                    query += " ORDER BY ";
+
+                    switch (sortOption)
+                    {
+                        case "tanggal":
+                            query += "Pelatihan.tanggal_pelatihan_awal ASC, Pelatihan.tanggal_pelatihan_akhir ASC";
+                            break;
+                        case "nama_pelatihan":
+                            query += "Pelatihan.nama_pelatihan ASC";
+                            break;
+                            // Tambahkan opsi penyortiran lainnya jika diperlukan
+                    }
+                }
 
                 SqlCommand command = new SqlCommand(query, _connection);
                 _connection.Open();
@@ -318,7 +347,173 @@ namespace IndustrialServices_API.Models
             return pelatihanList;
         }
 
-        public List<PelatihanModel> GetAllPelatihanTechnical2()
+        public List<PelatihanModel> GetAllPelatihanTechnical2(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            try
+            {
+                string query = "SELECT Pelatihan.id_pelatihan, Pelatihan.nama_pelatihan, Pelatihan.tanggal_pelatihan_awal, Pelatihan.tanggal_pelatihan_akhir, Pelatihan.id_tipe_pelatihan, Foto_Pelatihan.path_foto_pelatihan " +
+                               "FROM Pelatihan " +
+                               "INNER JOIN Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
+                               "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
+                               "LEFT JOIN Foto_Pelatihan_Detail ON Pelatihan.id_pelatihan = Foto_Pelatihan_Detail.id_pelatihan " +
+                               "LEFT JOIN Foto_Pelatihan ON Foto_Pelatihan_Detail.id_foto_pelatihan = Foto_Pelatihan.id_foto_pelatihan " +
+                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Technical'";
+
+                // Tambahkan filter_tipe_pelatihan ke query jika diberikan dan tidak sama dengan 0
+                if (!string.IsNullOrEmpty(filter_tipe_pelatihan) && filter_tipe_pelatihan != "0")
+                {
+                    query += " AND Pelatihan.id_tipe_pelatihan = " + filter_tipe_pelatihan;
+                }
+
+                // Tambahkan filter_bulan ke query jika diberikan dan tidak sama dengan 0
+                if (filter_bulan.HasValue && filter_bulan.Value != 0)
+                {
+                    query += " AND MONTH(Pelatihan.tanggal_pelatihan_awal) = " + filter_bulan;
+                }
+
+                // Tambahkan penyortiran berdasarkan opsi yang diberikan
+                if (!string.IsNullOrEmpty(sortOption))
+                {
+                    query += " ORDER BY ";
+
+                    switch (sortOption)
+                    {
+                        case "tanggal":
+                            query += "Pelatihan.tanggal_pelatihan_awal ASC, Pelatihan.tanggal_pelatihan_akhir ASC";
+                            break;
+                        case "nama_pelatihan":
+                            query += "Pelatihan.nama_pelatihan ASC";
+                            break;
+                            // Tambahkan opsi penyortiran lainnya jika diperlukan
+                    }
+                }
+                else
+                {
+                    // Jika tidak ada opsi penyortiran, gunakan urutan default
+                    query += " ORDER BY Pelatihan.id_pelatihan DESC";
+                }
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                        tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                        tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                        // tambahkan path_foto_pelatihan ke dalam model
+                        path_foto_pelatihan = reader["path_foto_pelatihan"].ToString()
+                    };
+                    pelatihanList.Add(pelatihan);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
+
+        public List<PelatihanModel> GetPelatihanTechnical(int id)
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            try
+            {
+                string query = "SELECT * FROM Pelatihan WHERE id_pelatihan = @id";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@id", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                        tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                        tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                        deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString(),
+                        status = Convert.ToInt32(reader["status"])
+                    };
+                    pelatihanList.Add(pelatihan);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
+
+        public List<PelatihanModel> GetAllPelatihanNonTechnical()
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            try
+            {
+                string query = "SELECT Pelatihan.* " +
+                               "FROM Pelatihan " +
+                               "INNER JOIN Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
+                               "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
+                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Non-Technical' " +
+                               "ORDER BY Pelatihan.tanggal_pelatihan_awal ASC, Pelatihan.tanggal_pelatihan_akhir ASC";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    PelatihanModel pelatihan = new PelatihanModel
+                    {
+                        id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                        nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                        tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                        tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                        id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                        deskripsi_pelatihan = reader["deskripsi_pelatihan"].ToString(),
+                        status = Convert.ToInt32(reader["status"])
+                    };
+                    pelatihanList.Add(pelatihan);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
+
+        public List<PelatihanModel> GetAllPelatihanNonTechnical2()
         {
             List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
             try
@@ -329,7 +524,7 @@ namespace IndustrialServices_API.Models
                                "INNER JOIN Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
                                "LEFT JOIN Foto_Pelatihan_Detail ON Pelatihan.id_pelatihan = Foto_Pelatihan_Detail.id_pelatihan " +
                                "LEFT JOIN Foto_Pelatihan ON Foto_Pelatihan_Detail.id_foto_pelatihan = Foto_Pelatihan.id_foto_pelatihan " +
-                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Technical' " +
+                               "WHERE Pelatihan.status != 0 AND Tenaga_Pengajar.bidang_keahlian = 'Non-Technical' " +
                                "ORDER BY Pelatihan.id_pelatihan DESC";
 
                 SqlCommand command = new SqlCommand(query, _connection);

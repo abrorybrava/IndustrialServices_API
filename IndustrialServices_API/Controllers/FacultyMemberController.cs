@@ -34,6 +34,23 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetAllFacultyMembersinWeb", Name = "GetAllFacultyMembersinWeb")]
+        public IActionResult GetAllFacultyMembersinWeb(string filter)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetAllFacultyMembersinWeb(filter);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
         [HttpGet("/GetAllFacultyMembersbyBK", Name = "GetAllFacultyMembersbyBK")]
         public IActionResult GetAllFacultyMembersbyBK(string bidang_keahlian)
         {
