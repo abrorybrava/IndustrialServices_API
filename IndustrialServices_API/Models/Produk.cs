@@ -151,5 +151,49 @@ namespace IndustrialServices_API.Models
             }
             return ProdukModel;
         }
+        public List<ProdukModel> GetAllProdukinWeb()
+        {
+            List<ProdukModel> produkList = new List<ProdukModel>();
+            try
+            {
+                string query = "SELECT Produk.*, " +
+                               "(SELECT MIN(Foto_Produk.path_foto_produk) " +
+                               " FROM Foto_Produk_Detail " +
+                               " LEFT JOIN Foto_Produk ON Foto_Produk_Detail.id_foto_produk = Foto_Produk.id_foto_produk " +
+                               " WHERE Foto_Produk_Detail.id_produk = Produk.id_produk) AS path_foto_produk " +
+                               "FROM Produk " +
+                               "WHERE Produk.status != 0;";
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    ProdukModel produkModel = new ProdukModel
+                    {
+                        id_produk = Convert.ToInt32(reader["id_produk"]),
+                        nama_produk = reader["nama_produk"].ToString(),
+                        id_tipe_produk = Convert.ToInt32(reader["id_tipe_produk"]),
+                        deskripsi_produk = reader["deskripsi_produk"].ToString(),
+                        status = Convert.ToInt32(reader["status"]),
+                        path_foto_produk = reader["path_foto_produk"].ToString() // Gunakan operator null-conditional untuk menghindari null reference exception
+                    };
+                    produkList.Add(produkModel);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return produkList;
+        }
     }
 }

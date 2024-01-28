@@ -97,5 +97,18 @@ namespace IndustrialServices_API.Controllers
                 return StatusCode(500, $"Failed to delete product: {ex.Message}");
             }
         }
+        [HttpGet("/GetAllProdukinWeb", Name = "GetAllProdukinWeb")]
+        public IActionResult GetAllProdukinWeb()
+        {
+            try
+            {
+                var produkList = produkRepository.GetAllProdukinWeb();
+                return Ok(produkList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve fasilitas: {ex.Message}");
+            }
+        }
     }
 }

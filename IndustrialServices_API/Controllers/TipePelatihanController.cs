@@ -43,6 +43,20 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetAllTipePelatihanbyBK", Name = "GetAllTipePelatihanbyBK")]
+        public IActionResult GetAllTipePelatihanbyBK(string bidang_keahlian)
+        {
+            try
+            {
+                var tipePelatihan = tipePelatihanRepository.GetAllTipePelatihanbyBK(bidang_keahlian);
+                return Ok(tipePelatihan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve type of training: {ex.Message}");
+            }
+        }
+
         [HttpPost("/InsertTipePelatihan", Name = "InsertTipePelatihan")]
         public IActionResult InsertTipePelatihan([FromBody] TipePelatihanModel tipePelatihan)
         {

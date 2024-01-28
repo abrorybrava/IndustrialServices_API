@@ -148,5 +148,50 @@ namespace IndustrialServices_API.Models
             }
             return fasilitasModel;
         }
+        public List<FasilitasModel> GetAllFasilitasinWeb()
+        {
+            List<FasilitasModel> fasilitasList = new List<FasilitasModel>();
+            try
+            {
+                string query = "SELECT Fasilitas.*, " +
+                               "(SELECT MIN(Foto_Fasilitas.path_photo_fasilitas) " +
+                               " FROM Foto_Fasilitas_Detail " +
+                               " LEFT JOIN Foto_Fasilitas ON Foto_Fasilitas_Detail.id_photo_fasilitas = Foto_Fasilitas.id_photo_fasilitas " +
+                               " WHERE Foto_Fasilitas_Detail.id_fasilitas = Fasilitas.id_fasilitas) AS path_photo_fasilitas " +
+                               "FROM Fasilitas " +
+                               "WHERE Fasilitas.status != 0;";
+
+
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    FasilitasModel fasilitasModel = new FasilitasModel
+                    {
+                        id_fasilitas = Convert.ToInt32(reader["id_fasilitas"]),
+                        nama_fasilitas = reader["nama_fasilitas"].ToString(),
+                        id_tipe_fasilitas = Convert.ToInt32(reader["id_tipe_fasilitas"]),
+                        deskripsi_fasilitas = reader["deskripsi_fasilitas"].ToString(),
+                        status = Convert.ToInt32(reader["status"]),
+                        path_foto_fasilitas = reader["path_photo_fasilitas"].ToString() // Use null-conditional operator to avoid null reference exception
+                    };
+                    fasilitasList.Add(fasilitasModel);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return fasilitasList;
+        }
     }
 }

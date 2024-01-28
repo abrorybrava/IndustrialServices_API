@@ -29,6 +29,19 @@ namespace IndustrialServices_API.Controllers
                 return StatusCode(500, $"Failed to retrieve fasilitas: {ex.Message}");
             }
         }
+        [HttpGet("/GetAllFasilitasinWeb", Name = "GetAllFasilitasinWeb")]
+        public IActionResult GetAllFasilitasinWeb()
+        {
+            try
+            {
+                var fasilitasList = _fasilitasRepository.GetAllFasilitasinWeb();
+                return Ok(fasilitasList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve fasilitas: {ex.Message}");
+            }
+        }
 
         [HttpGet("/GetFasilitas", Name = "GetFasilitas")]
         public IActionResult GetFasilitas(int id)

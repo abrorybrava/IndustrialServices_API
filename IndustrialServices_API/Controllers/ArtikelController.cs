@@ -32,6 +32,39 @@ namespace IndustrialServices_API.Controllers
             }
             return Ok(response);
         }
+        [HttpGet("/GetAllArtikelsinHome", Name = "GetAllArtikelsinHome")]
+        public IActionResult GetAllArtikelsinHome()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = artikelRepository.GetAllArtikelsinHome();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("/GetAllArtikelsDone", Name = "GetAllArtikelsDone")]
+        public IActionResult GetAllArtikelsDone()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = artikelRepository.GetAllArtikelsDone();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
 
         [HttpGet("/GetArtikel", Name = "GetArtikel")]
         public IActionResult GetArtikel(int id)
@@ -41,6 +74,40 @@ namespace IndustrialServices_API.Controllers
                 response.status = 200;
                 response.messages = "Success";
                 response.data = artikelRepository.GetArtikelById(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("/GetAnotherArtikel", Name = "GetAnotherArtikel")]
+        public IActionResult GetAnotherArtikel(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = artikelRepository.GetAnotherArtikel(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("/GetDetailArtikel", Name = "GetDetailArtikel")]
+        public IActionResult GetDetailArtikel(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = artikelRepository.GetDetailArtikel(id);
             }
             catch (Exception ex)
             {

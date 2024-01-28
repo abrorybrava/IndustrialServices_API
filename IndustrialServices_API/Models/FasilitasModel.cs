@@ -7,5 +7,6 @@
         public int id_tipe_fasilitas { get;set; }
         public string deskripsi_fasilitas { get; set; }
         public int status { get; set; }
+        public string path_foto_fasilitas { get; set; }
     }
 }

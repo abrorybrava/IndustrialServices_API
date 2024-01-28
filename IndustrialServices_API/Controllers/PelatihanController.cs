@@ -28,6 +28,20 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetAllPelatihaninHome", Name = "GetAllPelatihaninHome")]
+        public IActionResult GetAllPelatihaninHome()
+        {
+            try
+            {
+                var pelatihanList = pelatihanRepository.GetAllPelatihaninHome();
+                return Ok(pelatihanList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
         [HttpGet("/GetAllPelatihanTechnical", Name = "GetAllPelatihanTechnical")]
         public IActionResult GetAllPelatihanTechnical(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
         {
@@ -57,11 +71,11 @@ namespace IndustrialServices_API.Controllers
 
 
         [HttpGet("/GetAllPelatihanNonTechnical", Name = "GetAllPelatihanNonTechnical")]
-        public IActionResult GetAllPelatihanNonTechnical()
+        public IActionResult GetAllPelatihanNonTechnical(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
         {
             try
             {
-                var pelatihanList = pelatihanRepository.GetAllPelatihanNonTechnical();
+                var pelatihanList = pelatihanRepository.GetAllPelatihanNonTechnical(filter_tipe_pelatihan, filter_bulan, sortOption);
                 return Ok(pelatihanList);
             }
             catch (Exception ex)
@@ -69,13 +83,12 @@ namespace IndustrialServices_API.Controllers
                 return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
             }
         }
-
         [HttpGet("/GetAllPelatihanNonTechnical2", Name = "GetAllPelatihanNonTechnical2")]
-        public IActionResult GetAllPelatihanNonTechnical2()
+        public IActionResult GetAllPelatihanNonTechnical2(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
         {
             try
             {
-                var pelatihanList = pelatihanRepository.GetAllPelatihanNonTechnical2();
+                var pelatihanList = pelatihanRepository.GetAllPelatihanNonTechnical2(filter_tipe_pelatihan, filter_bulan, sortOption);
                 return Ok(pelatihanList);
             }
             catch (Exception ex)
@@ -90,6 +103,19 @@ namespace IndustrialServices_API.Controllers
             try
             {
                 var pelatihan = pelatihanRepository.GetPelatihanById(id);
+                return Ok(pelatihan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+        [HttpGet("/GetPelatihanDesk", Name = "GetPelatihanDesk")]
+        public IActionResult GetPelatihanDesk(int id)
+        {
+            try
+            {
+                var pelatihan = pelatihanRepository.GetPelatihanDesk(id);
                 return Ok(pelatihan);
             }
             catch (Exception ex)
@@ -161,16 +187,11 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                var existingPelatihan = pelatihanRepository.GetPelatihanById(pelatihan.id_pelatihan);
-                if (existingPelatihan != null)
-                {
+
                     pelatihanRepository.UpdatePelatihan(pelatihan);
                     return Ok("Pelatihan updated successfully");
-                }
-                else
-                {
-                    return NotFound($"Pelatihan with ID {pelatihan.id_pelatihan} not found");
-                }
+                
+
             }
             catch (Exception ex)
             {
@@ -206,6 +227,34 @@ namespace IndustrialServices_API.Controllers
             try
             {
                 var pelatihan = pelatihanRepository.GetPelatihanTechnical(id);
+                return Ok(pelatihan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
+        [HttpGet("/GetPelatihanNonTechnical", Name = "GetPelatihanNonTechnical")]
+        public IActionResult GetPelatihanNonTechnical(int id)
+        {
+            try
+            {
+                var pelatihan = pelatihanRepository.GetPelatihanNonTechnical(id);
+                return Ok(pelatihan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
+        [HttpGet("/GetPelatihanforBK", Name = "GetPelatihanforBK")]
+        public IActionResult GetPelatihanforBK(int id)
+        {
+            try
+            {
+                var pelatihan = pelatihanRepository.GetPelatihanforBK(id);
                 return Ok(pelatihan);
             }
             catch (Exception ex)

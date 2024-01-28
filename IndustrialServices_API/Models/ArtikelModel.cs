@@ -9,5 +9,7 @@
         public string isi_artikel { get; set; }
         public string sampul_artikel { get; set; }
         public int status { get; set; }
+
+        public string role { get; set; }
     }
 }

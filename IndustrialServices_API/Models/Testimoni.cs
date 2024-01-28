@@ -79,6 +79,44 @@ namespace IndustrialServices_API.Models
             return testimonial;
         }
 
+        public List<TestimoniModel> GetTestimonyByPelatihan(int id)
+        {
+            List<TestimoniModel> testimonials = new List<TestimoniModel>();
+            try
+            {
+                string query = "SELECT * FROM Testimoni WHERE id_pelatihan = @p1 AND status != 0";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    TestimoniModel testimonial = new TestimoniModel
+                    {
+                        id_testimoni = Convert.ToInt32(reader["id_testimoni"].ToString()),
+                        id_pelatihan = reader["id_pelatihan"].ToString(),
+                        nama_peserta = reader["nama_peserta"].ToString(),
+                        asal_instansi = reader["asal_instansi"].ToString(),
+                        foto_peserta = reader["foto_peserta"].ToString(),
+                        testimoni_peserta = reader["testimoni_peserta"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString())
+                    };
+                    testimonials.Add(testimonial);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return testimonials;
+        }
+
+
         public void InsertTestimony(TestimoniModel testimonial)
         {
             try

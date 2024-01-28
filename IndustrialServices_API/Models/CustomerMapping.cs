@@ -43,6 +43,38 @@ namespace IndustrialServices_API.Models
             }
             return customerm;
         }
+
+        public List<CustomerMappingModel> GetAllCustomerMappinginHome()
+        {
+            List<CustomerMappingModel> customerm = new List<CustomerMappingModel>();
+            try
+            {
+                string query = "SELECT * FROM Customer_Mapping WHERE status != 0 ORDER BY grade_logo, nama_logo ASC";
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    CustomerMappingModel cm = new CustomerMappingModel
+                    {
+                        id_customer_mapping = Convert.ToInt32(reader["id_customer_mapping"].ToString()),
+                        nama_logo = reader["nama_logo"].ToString(),
+                        grade_logo = Convert.ToInt32(reader["grade_logo"].ToString()),
+                        path_logo = reader["path_logo"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString()),
+                    };
+                    customerm.Add(cm);
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return customerm;
+        }
+
         public CustomerMappingModel GetCustomerMappingById(int id)
         {
             CustomerMappingModel customerMapping = new CustomerMappingModel();
@@ -114,7 +146,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Customer_Mapping WHERE nama_logo = @p1";
+                string query = "SELECT * FROM Customer_Mapping WHERE nama_logo = @p1 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", cm.nama_logo);
                 _connection.Open();

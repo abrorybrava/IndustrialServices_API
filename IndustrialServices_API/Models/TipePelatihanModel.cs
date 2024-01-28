@@ -4,6 +4,7 @@
     {
         public int id_tipe_pelatihan { get; set; }
         public string tipe_pelatihan { get; set; }
+        public string bidang_keahlian { get; set; }
         public int status { get; set; }
     }
 }

@@ -8,5 +8,7 @@
         public string pesanan { get; set; }
         public string deskripsi_produk { get; set; }
         public int status { get; set; }
+
+        public string path_foto_produk { get; set; }
     }
 }

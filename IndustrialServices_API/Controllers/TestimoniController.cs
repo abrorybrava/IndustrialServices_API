@@ -48,6 +48,22 @@ namespace IndustrialServices_API.Controllers
             }
             return Ok(response);
         }
+        [HttpGet("/GetTestimonyByPelatihan", Name = "GetTestimonyByPelatihan")]
+        public IActionResult GetTestimonyByPelatihan(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = testimoniRepository.GetTestimonyByPelatihan(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
 
         [HttpPost("/InsertTestimony", Name = "InsertTestimony")]
         public IActionResult InsertTestimony([FromBody] TestimoniModel testimony)

@@ -36,6 +36,23 @@ public class CustomerMappingController : ControllerBase
         return Ok(_response);
     }
 
+    [HttpGet("/GetAllCustomerMappinginHome", Name = "GetAllCustomerMappinginHome")]
+    public IActionResult GetAllCustomerMappinginHome()
+    {
+        try
+        {
+            _response.status = 200;
+            _response.messages = "Success";
+            _response.data = _customerMappingRepository.GetAllCustomerMappinginHome();
+        }
+        catch (Exception ex)
+        {
+            _response.status = 500;
+            _response.messages = "Failed, " + ex;
+        }
+        return Ok(_response);
+    }
+
     [HttpGet("/GetCustomerMapping", Name = "GetCustomerMapping")]
     public IActionResult GetCustomerMapping(int id)
     {

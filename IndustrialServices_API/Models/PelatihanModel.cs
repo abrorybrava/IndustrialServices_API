@@ -14,5 +14,6 @@
 
         public int id_fasilitas { get; set; }
         public string path_foto_pelatihan { get; set; }
+        public string bidang_keahlian { get; set; }
     }
 }
