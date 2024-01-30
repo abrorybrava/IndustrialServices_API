@@ -120,6 +120,103 @@ namespace IndustrialServices_API.Models
             return pelatihanList;
         }
 
+        public List<PelatihanModel> GetAllPelatihaninPengajarDetail(int id)
+        {
+            List<PelatihanModel> pelatihanList = new List<PelatihanModel>();
+            List<int> idPelatihanList = new List<int>();
+
+            try
+            {
+                string pengajarQuery = "SELECT id_pengajar, id_pelatihan FROM Detail_Pengajar_Pelatihan WHERE id_pengajar = @p1";
+                SqlCommand pengajarCommand = new SqlCommand(pengajarQuery, _connection);
+                pengajarCommand.Parameters.AddWithValue("@p1", id);
+                _connection.Open();
+                SqlDataReader pengajarReader = pengajarCommand.ExecuteReader();
+
+                // Kumpulkan semua id_pelatihan dalam list
+                while (pengajarReader.Read())
+                {
+                    int id_pelatihan = Convert.ToInt32(pengajarReader["id_pelatihan"]);
+                    if (id_pelatihan > 0)
+                    {
+                        idPelatihanList.Add(id_pelatihan);
+                    }
+                }
+
+                pengajarReader.Close();
+
+                // Gunakan setiap id_pelatihan dalam query utama
+                foreach (int id_pelatihan in idPelatihanList)
+                {
+                    string query = "SELECT " +
+                                   "    Pelatihan.id_pelatihan, " +
+                                   "    Pelatihan.nama_pelatihan, " +
+                                   "    Pelatihan.tanggal_pelatihan_awal, " +
+                                   "    Pelatihan.tanggal_pelatihan_akhir, " +
+                                   "    Pelatihan.id_tipe_pelatihan, " +
+                                   "    MIN(Foto_Pelatihan.path_foto_pelatihan) AS path_foto_pelatihan " +
+                                   "FROM " +
+                                   "    Pelatihan " +
+                                   "INNER JOIN " +
+                                   "    Detail_Pengajar_Pelatihan ON Pelatihan.id_pelatihan = Detail_Pengajar_Pelatihan.id_pelatihan " +
+                                   "INNER JOIN " +
+                                   "    Tenaga_Pengajar ON Detail_Pengajar_Pelatihan.id_pengajar = Tenaga_Pengajar.id_pengajar " +
+                                   "LEFT JOIN " +
+                                   "    Foto_Pelatihan_Detail ON Pelatihan.id_pelatihan = Foto_Pelatihan_Detail.id_pelatihan " +
+                                   "LEFT JOIN " +
+                                   "    Foto_Pelatihan ON Foto_Pelatihan_Detail.id_foto_pelatihan = Foto_Pelatihan.id_foto_pelatihan " +
+                                   "WHERE " +
+                                   "    Pelatihan.status != 0 " +
+                                   "    AND Pelatihan.id_pelatihan = @p2 " +
+                                   "GROUP BY " +
+                                   "    Pelatihan.id_pelatihan, " +
+                                   "    Pelatihan.nama_pelatihan, " +
+                                   "    Pelatihan.tanggal_pelatihan_awal, " +
+                                   "    Pelatihan.tanggal_pelatihan_akhir, " +
+                                   "    Pelatihan.id_tipe_pelatihan " +
+                                   "ORDER BY " +
+                                   "    Pelatihan.nama_pelatihan ASC";
+
+
+                    SqlCommand command = new SqlCommand(query, _connection);
+                    command.Parameters.AddWithValue("@p2", id_pelatihan);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        PelatihanModel pelatihan = new PelatihanModel
+                        {
+                            id_pelatihan = Convert.ToInt32(reader["id_pelatihan"]),
+                            nama_pelatihan = reader["nama_pelatihan"].ToString(),
+                            tanggal_pelatihan_awal = Convert.ToDateTime(reader["tanggal_pelatihan_awal"]),
+                            tanggal_pelatihan_akhir = Convert.ToDateTime(reader["tanggal_pelatihan_akhir"]),
+                            id_tipe_pelatihan = Convert.ToInt32(reader["id_tipe_pelatihan"]),
+                            path_foto_pelatihan = reader["path_foto_pelatihan"].ToString()
+                        };
+                        pelatihanList.Add(pelatihan);
+                    }
+
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+
+            return pelatihanList;
+        }
+
+
+
+
+
+
+
         public List<PelatihanModel> GetFasilitasPelatihan(int id)
         {
             List<PelatihanModel> pmodel = new List<PelatihanModel>();

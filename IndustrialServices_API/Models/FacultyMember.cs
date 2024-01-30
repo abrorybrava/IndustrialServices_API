@@ -244,6 +244,36 @@ namespace IndustrialServices_API.Models
             return facultyMember;
         }
 
+        public FacultyMemberModel GetFacultyMemberDetails(int id)
+        {
+            FacultyMemberModel facultyMember = new FacultyMemberModel();
+            try
+            {
+                string query = "SELECT * FROM Tenaga_Pengajar WHERE id_pengajar = @p1";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    facultyMember.id_pengajar = Convert.ToInt32(reader["id_pengajar"].ToString());
+                    facultyMember.npk = reader["npk"].ToString();
+                    facultyMember.nama_pengajar = reader["nama_pengajar"].ToString();
+                    facultyMember.bidang_keahlian = reader["bidang_keahlian"].ToString();
+                    facultyMember.foto_pengajar = reader["foto_pengajar"].ToString();
+                    facultyMember.deskripsi_pengajar = reader["deskripsi_pengajar"].ToString();
+                    facultyMember.status = Convert.ToInt32(reader["status"].ToString());
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return facultyMember;
+        }
+
         public void InsertFacultyMember(FacultyMemberModel facultyMember)
         {
             try

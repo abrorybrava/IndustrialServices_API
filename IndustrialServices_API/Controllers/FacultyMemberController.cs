@@ -117,6 +117,23 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetFacultyMemberDetails", Name = "GetFacultyMemberDetails")]
+        public IActionResult GetFacultyMemberDetails(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetFacultyMemberDetails(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
         [HttpPost("/InsertFacultyMember", Name = "InsertFacultyMember")]
         public IActionResult InsertFacultyMember([FromBody] FacultyMemberModel facultyMember)
         {

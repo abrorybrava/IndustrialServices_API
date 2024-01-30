@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace IndustrialServices_API.Models
@@ -114,6 +116,17 @@ namespace IndustrialServices_API.Models
             return pengelolaWeb;
         }
 
+
+            public static string HashPassword(string password)
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                    return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
+            }
+
+
         public void InsertPengelolaWeb(PengelolaWebModel pengelolaWeb)
         {
             try
@@ -122,7 +135,9 @@ namespace IndustrialServices_API.Models
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", pengelolaWeb.nama_pengelola);
                 command.Parameters.AddWithValue("@username", pengelolaWeb.username);
-                command.Parameters.AddWithValue("@password", pengelolaWeb.password);
+
+                string hashedPassword = HashPassword(pengelolaWeb.password);
+                command.Parameters.AddWithValue("@password", hashedPassword);
                 command.Parameters.AddWithValue("@peran", pengelolaWeb.peran);
                 command.Parameters.AddWithValue("@status", pengelolaWeb.status);
                 _connection.Open();
@@ -142,13 +157,35 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "UPDATE Pengelola_Web SET nama_pengelola = @nama, username = @username, password = @password, peran = @peran, status = @status WHERE id_pengelola = @id";
+                string query = "UPDATE Pengelola_Web SET nama_pengelola = @nama, username = @username, peran = @peran, status = @status WHERE id_pengelola = @id";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@nama", pengelolaWeb.nama_pengelola);
                 command.Parameters.AddWithValue("@username", pengelolaWeb.username);
-                command.Parameters.AddWithValue("@password", pengelolaWeb.password);
                 command.Parameters.AddWithValue("@peran", pengelolaWeb.peran);
                 command.Parameters.AddWithValue("@status", pengelolaWeb.status);
+                command.Parameters.AddWithValue("@id", pengelolaWeb.id_pengelola);
+                _connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+
+        public void UpdateUsnPwPengelolaWeb(PengelolaWebModel pengelolaWeb)
+        {
+            try
+            {
+                string query = "UPDATE Pengelola_Web SET password = @password WHERE id_pengelola = @id";
+                SqlCommand command = new SqlCommand(query, _connection);
+                string hashedPassword = HashPassword(pengelolaWeb.password);
+                command.Parameters.AddWithValue("@password", hashedPassword);
                 command.Parameters.AddWithValue("@id", pengelolaWeb.id_pengelola);
                 _connection.Open();
                 command.ExecuteNonQuery();
@@ -187,10 +224,11 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 OR password = @p2";
+                string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 OR password = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", pengelola.username);
-                command.Parameters.AddWithValue("@p2", pengelola.password);
+                string hashedPassword = HashPassword(pengelola.password);
+                command.Parameters.AddWithValue("@p2", hashedPassword);
                 _connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
@@ -210,15 +248,41 @@ namespace IndustrialServices_API.Models
             return false; // Username dan Password belum digunakan
         }
 
-        public bool CheckUsernamePasswordEdit(PengelolaWebModel pengelola)
+
+        public bool CheckUsername(PengelolaWebModel pengelola)
         {
             try
             {
-                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND (username = @p2 OR password = @p3)";
+                string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 AND status != 0";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", pengelola.username);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckUsernameEdit(PengelolaWebModel pengelola)
+        {
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND username = @p3 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", pengelola.id_pengelola);
-                command.Parameters.AddWithValue("@p2", pengelola.username);
-                command.Parameters.AddWithValue("@p3", pengelola.password);
+                command.Parameters.AddWithValue("@p3", pengelola.username);
                 _connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
@@ -245,7 +309,8 @@ namespace IndustrialServices_API.Models
                 string query = "SELECT * FROM Pengelola_Web WHERE username = @p1 AND password = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", username);
-                command.Parameters.AddWithValue("@p2", password);
+                string hashedPassword = HashPassword(password);
+                command.Parameters.AddWithValue("@p2", hashedPassword);
                 _connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
@@ -268,6 +333,60 @@ namespace IndustrialServices_API.Models
                 _connection.Close();
             }
             return pengelolaWeb;
+        }
+
+        public bool CheckPasswordEdit(PengelolaWebModel pengelola)
+        {
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola = @p1 AND password = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", pengelola.id_pengelola);
+                string hashedPassword = HashPassword(pengelola.passwordawal);
+                command.Parameters.AddWithValue("@p2", hashedPassword);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
+        }
+
+        public bool CheckPasswordEdit2(PengelolaWebModel pengelola)
+        {
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web WHERE id_pengelola != @p1 AND password = @p2";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", pengelola.id_pengelola);
+                string hashedPassword = HashPassword(pengelola.password);
+                command.Parameters.AddWithValue("@p2", hashedPassword);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true; // Username atau Password sudah digunakan
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return false; // Username dan Password belum digunakan
         }
 
     }

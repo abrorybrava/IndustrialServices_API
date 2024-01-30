@@ -42,6 +42,20 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetAllPelatihaninPengajarDetail", Name = "GetAllPelatihaninPengajarDetail")]
+        public IActionResult GetAllPelatihaninPengajarDetail(int id)
+        {
+            try
+            {
+                var pelatihanList = pelatihanRepository.GetAllPelatihaninPengajarDetail(id);
+                return Ok(pelatihanList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve pelatihan: {ex.Message}");
+            }
+        }
+
         [HttpGet("/GetAllPelatihanTechnical", Name = "GetAllPelatihanTechnical")]
         public IActionResult GetAllPelatihanTechnical(string filter_tipe_pelatihan = null, int? filter_bulan = null, string sortOption = null)
         {

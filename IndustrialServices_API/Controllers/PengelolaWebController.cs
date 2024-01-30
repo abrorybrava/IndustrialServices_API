@@ -77,6 +77,12 @@ namespace IndustrialServices_API.Controllers
                     response.messages = "Success";
                     pengelolaWebRepository.InsertPengelolaWeb(pengelolaWeb);
                 }
+                else if (pengelolaWebRepository.CheckUsername(pengelolaWeb))
+                {
+                    response.status = 500;
+                    response.messages = "Username atau Password sudah digunakan";
+                    return Ok(response);
+                }
                 else
                 {
                     response.status = 500;
@@ -97,7 +103,7 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                if (!pengelolaWebRepository.CheckUsernamePasswordEdit(pengelolaWeb))
+                if (!pengelolaWebRepository.CheckUsernameEdit(pengelolaWeb))
                 {
                     response.status = 200;
                     response.messages = "Success";
@@ -107,6 +113,40 @@ namespace IndustrialServices_API.Controllers
                 {
                     response.status = 500;
                     response.messages = "Username atau Password sudah digunakan";
+                    return Ok(response);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex.Message;
+            }
+            return Ok(response);
+        }
+
+
+        [HttpPost("/UpdateUsnPwPengelolaWeb", Name = "UpdateUsnPwPengelolaWeb")]
+        public IActionResult UpdateUsnPwPengelolaWeb([FromBody] PengelolaWebModel pengelolaWeb)
+        {
+            try
+            {
+                if (pengelolaWebRepository.CheckPasswordEdit(pengelolaWeb))
+                {
+                    response.status = 200;
+                    response.messages = "Success";
+                    pengelolaWebRepository.UpdateUsnPwPengelolaWeb(pengelolaWeb);
+                }
+                else if (pengelolaWebRepository.CheckPasswordEdit2(pengelolaWeb))
+                {
+                    response.status = 400;
+                    response.messages = "Password sudah dipakai!";
+                    return Ok(response);
+                }
+                else
+                {
+                    response.status = 500;
+                    response.messages = "Password lama tidak cocok!";
                     return Ok(response);
                 }
 
