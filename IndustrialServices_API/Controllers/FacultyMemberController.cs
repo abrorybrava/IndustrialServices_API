@@ -34,6 +34,23 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetAllFacultyMembersinIndex", Name = "GetAllFacultyMembersinIndex")]
+        public IActionResult GetAllFacultyMembersinIndex()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = facultyMemberRepository.GetAllFacultyMembersinIndex();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+
         [HttpGet("/GetAllFacultyMembersinWeb", Name = "GetAllFacultyMembersinWeb")]
         public IActionResult GetAllFacultyMembersinWeb(string filter)
         {
@@ -213,6 +230,22 @@ namespace IndustrialServices_API.Controllers
                 response.status = 200;
                 response.messages = "Success";
                 facultyMemberRepository.DeleteFacultyMember(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex;
+            }
+            return Ok(response);
+        }
+        [HttpPost("/ActivateFacultyMember", Name = "ActivateFacultyMember")]
+        public IActionResult ActivateFacultyMember(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                facultyMemberRepository.ActivateFacultyMember(id);
             }
             catch (Exception ex)
             {

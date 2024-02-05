@@ -52,6 +52,40 @@ namespace IndustrialServices_API.Models
             }
             return pengelolaWebList;
         }
+        public List<PengelolaWebModel> GetAllPengelolaWebinIndex()
+        {
+            List<PengelolaWebModel> pengelolaWebList = new List<PengelolaWebModel>();
+            try
+            {
+                string query = "SELECT * FROM Pengelola_Web";
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    PengelolaWebModel pengelolaWeb = new PengelolaWebModel
+                    {
+                        id_pengelola = Convert.ToInt32(reader["id_pengelola"]),
+                        nama_pengelola = reader["nama_pengelola"].ToString(),
+                        username = reader["username"].ToString(),
+                        password = reader["password"].ToString(),
+                        peran = reader["peran"].ToString(),
+                        status = Convert.ToInt32(reader["status"])
+                    };
+                    pengelolaWebList.Add(pengelolaWeb);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return pengelolaWebList;
+        }
 
         public PengelolaWebModel GetPengelolaWebById(int id)
         {
@@ -219,6 +253,27 @@ namespace IndustrialServices_API.Models
                 _connection.Close();
             }
         }
+
+        public void ActivatePengelolaWeb(int id)
+        {
+            try
+            {
+                string query = "UPDATE Pengelola_Web SET status = 1 WHERE id_pengelola = @id";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@id", id);
+                _connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
 
         public bool CheckUsernamePassword(PengelolaWebModel pengelola)
         {
@@ -391,3 +446,4 @@ namespace IndustrialServices_API.Models
 
     }
 }
+    

@@ -193,5 +193,36 @@ namespace IndustrialServices_API.Models
 
             return fasilitasList;
         }
+
+        public FasilitasModel GetFasilitasDetails(int id)
+        {
+            FasilitasModel fasilitasModel = new FasilitasModel();
+            try
+            {
+                string query = "SELECT * FROM Fasilitas WHERE id_fasilitas = @id";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@id", id);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    fasilitasModel.id_fasilitas = Convert.ToInt32(reader["id_fasilitas"]);
+                    fasilitasModel.nama_fasilitas = reader["nama_fasilitas"].ToString();
+                    fasilitasModel.id_tipe_fasilitas = Convert.ToInt32(reader["id_tipe_fasilitas"]);
+                    fasilitasModel.deskripsi_fasilitas = reader["deskripsi_fasilitas"].ToString();
+                    fasilitasModel.status = Convert.ToInt32(reader["status"]);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return fasilitasModel;
+        }
     }
 }

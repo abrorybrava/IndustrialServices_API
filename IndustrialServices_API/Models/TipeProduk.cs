@@ -142,7 +142,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Produk WHERE tipe_produk = @p1";
+                string query = "SELECT * FROM Tipe_Produk WHERE tipe_produk = @p1 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipeProduk.tipe_produk);
                 _connection.Open();
@@ -168,7 +168,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Produk WHERE id_tipe_produk != @p1 AND tipe_produk = @p2";
+                string query = "SELECT * FROM Tipe_Produk WHERE id_tipe_produk != @p1 AND tipe_produk = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipeProduk.id_tipe_produk);
                 command.Parameters.AddWithValue("@p2", tipeProduk.tipe_produk);

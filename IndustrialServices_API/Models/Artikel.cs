@@ -46,12 +46,39 @@ namespace IndustrialServices_API.Models
             return artikels;
         }
 
-        public List<ArtikelModel> GetAllArtikelsDone()
+        public List<ArtikelModel> GetAllArtikelsDone(string filter)
         {
             List<ArtikelModel> artikels = new List<ArtikelModel>();
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM Artikel WHERE status = 2 ORDER BY NEWID();";
+                string query = "SELECT * FROM Artikel WHERE status = 2";
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    switch (filter.ToLower())
+                    {
+                        case "bulan":
+                            // Tampilkan artikel yang tanggal_rilis-nya di bulan tertentu
+                            query += " ORDER BY NEWID();";
+                            break;
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "5":
+                        case "6":
+                        case "7":
+                        case "8":
+                        case "9":
+                        case "10":
+                        case "11":
+                        case "12":
+                            // Tampilkan artikel yang tanggal_rilis-nya di bulan sesuai filter
+                            int monthFilter = Convert.ToInt32(filter);
+                            query += $" AND MONTH(tanggal_rilis) = {monthFilter} ORDER BY NEWID();";
+                            break;
+
+                    }
+                }
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     connection.Open();
@@ -76,6 +103,7 @@ namespace IndustrialServices_API.Models
             }
             return artikels;
         }
+
 
         public List<ArtikelModel> GetAllArtikelsinHome()
         {
@@ -196,7 +224,7 @@ namespace IndustrialServices_API.Models
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                if (artikel.sampul_artikel == "")
+                if (artikel.sampul_artikel == "null")
                 {
                     string query1 = "UPDATE Artikel SET id_pengelola = @id_pengelola, tanggal_rilis = @tanggal_rilis, " +
                "judul_artikel = @judul_artikel, isi_artikel = @isi_artikel, " +

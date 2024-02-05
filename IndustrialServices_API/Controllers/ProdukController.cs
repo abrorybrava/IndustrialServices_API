@@ -27,13 +27,27 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetProdukDetails", Name = "GetProdukDetails")]
+        public IActionResult GetProdukDetails(int id)
+        {
+            try
+            {
+                    var produk = produkRepository.GetProdukDetails(id);
+                    return Ok(produk);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve product: {ex.Message}");
+            }
+        }
         [HttpGet("/GetProduk", Name = "GetProduk")]
         public IActionResult GetProduk(int id)
         {
             try
             {
-                    var produk = produkRepository.GetProdukById(id);
-                    return Ok(produk);
+                var produk = produkRepository.GetProdukById(id);
+                return Ok(produk);
 
             }
             catch (Exception ex)

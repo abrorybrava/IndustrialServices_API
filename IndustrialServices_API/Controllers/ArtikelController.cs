@@ -50,13 +50,13 @@ namespace IndustrialServices_API.Controllers
         }
 
         [HttpGet("/GetAllArtikelsDone", Name = "GetAllArtikelsDone")]
-        public IActionResult GetAllArtikelsDone()
+        public IActionResult GetAllArtikelsDone(string filter)
         {
             try
             {
                 response.status = 200;
                 response.messages = "Success";
-                response.data = artikelRepository.GetAllArtikelsDone();
+                response.data = artikelRepository.GetAllArtikelsDone(filter);
             }
             catch (Exception ex)
             {
@@ -148,24 +148,10 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    if (!string.IsNullOrEmpty(artikel.sampul_artikel))
-                    {
-                        string fileName = artikel.sampul_artikel;
-                        fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
-                        artikel.sampul_artikel = fileName;
-                    }
-
                     response.status = 200;
                     response.messages = "Success";
                     artikelRepository.UpdateArtikel(artikel);
-                }
-                else
-                {
-                    response.status = 400; // Bad Request
-                    response.messages = "Invalid data provided.";
-                }
+
             }
             catch (Exception ex)
             {

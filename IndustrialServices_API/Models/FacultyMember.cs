@@ -48,6 +48,39 @@ namespace IndustrialServices_API.Models
             }
             return facultyMembers;
         }
+
+        public List<FacultyMemberModel> GetAllFacultyMembersinIndex()
+        {
+            List<FacultyMemberModel> facultyMembers = new List<FacultyMemberModel>();
+            try
+            {
+                string query = "SELECT * FROM Tenaga_Pengajar";
+                SqlCommand command = new SqlCommand(query, _connection);
+                _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    FacultyMemberModel facultyMember = new FacultyMemberModel
+                    {
+                        id_pengajar = Convert.ToInt32(reader["id_pengajar"].ToString()),
+                        npk = reader["npk"].ToString(),
+                        nama_pengajar = reader["nama_pengajar"].ToString(),
+                        bidang_keahlian = reader["bidang_keahlian"].ToString(),
+                        foto_pengajar = reader["foto_pengajar"].ToString(),
+                        deskripsi_pengajar = reader["deskripsi_pengajar"].ToString(),
+                        status = Convert.ToInt32(reader["status"].ToString())
+                    };
+                    facultyMembers.Add(facultyMember);
+                }
+                reader.Close();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return facultyMembers;
+        }
         public List<FacultyMemberModel> GetAllFacultyMembersinWeb(string filter)
         {
             List<FacultyMemberModel> facultyMembers = new List<FacultyMemberModel>();
@@ -341,6 +374,23 @@ namespace IndustrialServices_API.Models
             try
             {
                 string query = "UPDATE Tenaga_Pengajar SET status = 0 WHERE id_pengajar = @p1";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.AddWithValue("@p1", id);
+                _connection.Open();
+                command.ExecuteNonQuery();
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void ActivateFacultyMember(int id)
+        {
+            try
+            {
+                string query = "UPDATE Tenaga_Pengajar SET status = 1 WHERE id_pengajar = @p1";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", id);
                 _connection.Open();

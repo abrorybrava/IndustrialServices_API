@@ -43,6 +43,20 @@ namespace IndustrialServices_API.Controllers
             }
         }
 
+        [HttpGet("/GetFasilitasDetails", Name = "GetFasilitasDetails")]
+        public IActionResult GetFasilitasDetails(int id)
+        {
+            try
+            {
+                var fasilitas = _fasilitasRepository.GetFasilitasDetails(id);
+                return Ok(fasilitas);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve fasilitas: {ex.Message}");
+            }
+        }
+
         [HttpGet("/GetFasilitas", Name = "GetFasilitas")]
         public IActionResult GetFasilitas(int id)
         {
@@ -77,16 +91,10 @@ namespace IndustrialServices_API.Controllers
         {
             try
             {
-                var existingFasilitas = _fasilitasRepository.GetFasilitasById(fasilitas.id_fasilitas);
-                if (existingFasilitas != null)
-                {
+
                     _fasilitasRepository.UpdateFasilitas(fasilitas);
                     return Ok("Fasilitas updated successfully");
-                }
-                else
-                {
-                    return NotFound($"Fasilitas with ID {fasilitas.id_fasilitas} not found");
-                }
+
             }
             catch (Exception ex)
             {

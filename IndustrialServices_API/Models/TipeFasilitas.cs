@@ -143,7 +143,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Fasilitas WHERE tipe_fasilitas = @p1";
+                string query = "SELECT * FROM Tipe_Fasilitas WHERE tipe_fasilitas = @p1 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipeFasilitas.tipe_fasilitas);
                 _connection.Open();
@@ -169,7 +169,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Fasilitas WHERE id_tipe_fasilitas != @p1 AND tipe_fasilitas = @p2";
+                string query = "SELECT * FROM Tipe_Fasilitas WHERE id_tipe_fasilitas != @p1 AND tipe_fasilitas = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipeFasilitas.id_tipe_fasilitas);
                 command.Parameters.AddWithValue("@p2", tipeFasilitas.tipe_fasilitas);

@@ -180,7 +180,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Pelatihan WHERE tipe_pelatihan = @p1";
+                string query = "SELECT * FROM Tipe_Pelatihan WHERE tipe_pelatihan = @p1 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipePelatihan.tipe_pelatihan);
                 _connection.Open();
@@ -206,7 +206,7 @@ namespace IndustrialServices_API.Models
         {
             try
             {
-                string query = "SELECT * FROM Tipe_Pelatihan WHERE id_tipe_pelatihan != @p1 AND tipe_pelatihan = @p2";
+                string query = "SELECT * FROM Tipe_Pelatihan WHERE id_tipe_pelatihan != @p1 AND tipe_pelatihan = @p2 AND status != 0";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@p1", tipePelatihan.id_tipe_pelatihan);
                 command.Parameters.AddWithValue("@p2", tipePelatihan.tipe_pelatihan);

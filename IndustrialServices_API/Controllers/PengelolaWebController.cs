@@ -32,6 +32,23 @@ namespace IndustrialServices_API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("/GetAllPengelolaWebinIndex", Name = "GetAllPengelolaWebinIndex")]
+        public IActionResult GetAllPengelolaWebinIndex()
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                response.data = pengelolaWebRepository.GetAllPengelolaWebinIndex();
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex.Message;
+            }
+            return Ok(response);
+        }
+
         [HttpGet("/GetPengelolaWeb", Name = "GetPengelolaWeb")]
         public IActionResult GetPengelolaWeb(int id)
         {
@@ -175,6 +192,24 @@ namespace IndustrialServices_API.Controllers
             }
             return Ok(response);
         }
+
+        [HttpPost("/ActivatePengelolaWeb", Name = "ActivatePengelolaWeb")]
+        public IActionResult ActivatePengelolaWeb(int id)
+        {
+            try
+            {
+                response.status = 200;
+                response.messages = "Success";
+                pengelolaWebRepository.ActivatePengelolaWeb(id);
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.messages = "Failed, " + ex.Message;
+            }
+            return Ok(response);
+        }
+
         [HttpGet("/Login", Name = "Login")]
         public IActionResult Login(string username, string password)
         {
